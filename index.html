@@ -3,42 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login ✈️ Aviator Predictor</title>
+  <title>Login ✈️ Predictor</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
-    <h1>Welcome to Aviator Predictor ✈️</h1>
-    <p>Enter your access key to unlock predictions.</p>
+    <h1>Welcome to Predictor <span class="animated-plane">✈️</span></h1>
+    <p>Enter your access key to proceed.</p>
   </header>
 
   <main>
-    <section class="login-container">
+    <section id="login-container" class="hidden">
       <form id="login-form">
         <label for="access-key">🔑 Access Key:</label>
-        <input type="password" id="access-key" name="access-key" placeholder="Enter Key" required>
+        <input type="text" id="access-key" placeholder="Enter Key" required>
         <button type="submit">Submit</button>
       </form>
     </section>
 
-    <!-- Popup Modal -->
-    <div id="popup" class="hidden">
-      <p id="popup-message">Checking key...</p>
-    </div>
-
-    <!-- Error Section -->
-    <div id="error-section" class="hidden">
-      <p id="error-message">❌ Key is incorrect.</p>
-      <button id="retry-btn">Try Again</button>
-      <button id="buy-key-btn">Buy a Key</button>
+    <!-- Popup Modal for Incorrect Password -->
+    <div id="error-popup" class="hidden">
+      <p id="error-message">❌ Key is incorrect. Please try again or buy a new key.</p>
+      <div class="popup-buttons">
+        <button id="retry-btn">Try Again</button>
+        <button id="buy-key-btn">Buy Key</button>
+      </div>
     </div>
   </main>
 
   <footer>
-    <div class="marquee">
-      <p>PURCHASE KEY FROM AHADI +254704985993</p></div>
+    <p>© 2025 AHADITECH.ONLINE | All Rights Reserved</p>
   </footer>
 
   <script src="script.js"></script>
 </body>
-</html>
+  </html>
