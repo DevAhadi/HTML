@@ -1,4 +1,4 @@
-/* Global Styles */
+/* General Styling */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
@@ -19,26 +19,39 @@ h1 {
   color: yellow;
 }
 
-/* Login Container */
-.login-container {
-  background: #1e1e2f;
-  padding: 40px;
-  border-radius: 10px;
-  width: 350px;
-  margin: 60px auto;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+.animated-plane {
+  display: inline-block;
+  animation: takeoff 3s infinite ease-in-out;
+  font-size: 30px;
+  color: red;
+  margin-left: 10px;
 }
 
-label {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 20px;
-  color: cyan;
+@keyframes takeoff {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(30px, -30px);
+  }
+  100% {
+    transform: translate(60px, -60px);
+  }
+}
+
+/* Login Form */
+#login-container {
+  background: #1e1e2f;
+  padding: 30px;
+  border-radius: 8px;
+  width: 350px;
+  margin: 60px auto;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
 }
 
 input {
-  padding: 12px;
   width: 100%;
+  padding: 12px;
   margin-bottom: 20px;
   border-radius: 6px;
   border: 1px solid #ccc;
@@ -47,20 +60,20 @@ input {
 button {
   padding: 14px;
   width: 100%;
-  font-size: 20px;
-  background: #e53935;
-  border: none;
+  background: green;
   color: white;
-  cursor: pointer;
+  font-size: 18px;
+  border: none;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 button:hover {
-  background: #c62828;
+  background: darkgreen;
 }
 
 /* Popup Modal */
-#popup {
+#error-popup {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -68,38 +81,19 @@ button:hover {
   background: #1e1e2f;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-  width: 300px;
-}
-
-.hidden {
-  display: none;
-}
-
-#popup-message {
-  font-size: 18px;
-  color: yellow;
-}
-
-/* Error Section */
-#error-section {
-  padding: 30px;
-  background: #121212;
-  border-radius: 8px;
-  width: 300px;
-  margin: 20px auto;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+  width: 280px;
   text-align: center;
 }
 
-#error-message {
-  color: red;
-  font-size: 20px;
+.popup-buttons {
+  margin-top: 20px;
 }
 
-#retry-btn, #buy-key-btn {
+.popup-buttons button {
+  margin: 5px;
   padding: 10px 20px;
-  font-size: 18px;
-  margin: 10px 5px;
+  font-size: 16px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -122,44 +116,7 @@ button:hover {
 #buy-key-btn:hover {
   background: #2eb82e;
 }
-/* Footer */
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #121212;
-  color: white;
-  overflow: hidden;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-/* Marquee Effect */
-.marquee {
-  display: inline-block;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.marquee p {
-  display: inline-block;
-  color: red;
-  font-size: 20px;
-  font-weight: bold;
-  animation: scroll-left 10s linear infinite;
-  margin: 0;
-}
-
-/* Scrolling Animation */
-@keyframes scroll-left {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
+.hidden {
+  display: none;
+    }
