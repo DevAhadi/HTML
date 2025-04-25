@@ -22,7 +22,7 @@ document.getElementById("login-form").addEventListener("submit", function(event)
   event.preventDefault();
 
   const enteredKey = document.getElementById("access-key").value;
-  const correctKey = "12345";
+  const correctKey = "5resdyer";
   const popup = document.getElementById("popup");
   const popupMessage = document.getElementById("popup-message");
 
