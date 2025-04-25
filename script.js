@@ -2,7 +2,7 @@ document.getElementById("login-form").addEventListener("submit", function(event)
   event.preventDefault();
 
   const enteredKey = document.getElementById("access-key").value;
-  const correctKey = "12345"; // Change this to your actual key
+  const correctKey = "5resdyer"; // Change this to your actual key
 
   // Show popup message for 10 seconds
   const popup = document.getElementById("popup");
