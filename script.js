@@ -1,8 +1,8 @@
 window.onload = function() {
-  const xpiryDate = localStorage.getItem("xpiryDate");
+  const yexpiryDate = localStorage.getItem("yexpiryDate");
   const currentDate = new Date();
 
-  if (xpiryDate && new Date(xpiryDate) > currentDate) {
+  if (yexpiryDate && new Date(yexpiryDate) > currentDate) {
     if (!localStorage.getItem("redirected")) {
       localStorage.setItem("redirected", true);
       window.location.href = "predictor.html";
@@ -15,17 +15,17 @@ window.onload = function() {
 // Handle form submission
 document.getElementById("login-form").addEventListener("submit", function(event) {
   event.preventDefault();
-    const enteredKey = document.getElementById("access-key").value;
+
+  const enteredKey = document.getElementById("access-key").value;
   const correctKey = "12345";
 
   if (enteredKey === correctKey) {
-    const expiryDate = new Date();
-    xpiryDate.setDate(new Date().getDate() + 7);
-    localStorage.setItem("xpiryDate", xpiryDate);
+    const yexpiryDate = new Date();
+    yexpiryDate.setDate(new Date().getDate() + 7);
+    localStorage.setItem("yexpiryDate", yexpiryDate);
     localStorage.setItem("redirected", false); // Reset redirection flag
-window.location.href = "predictor.html";
 
-
+    window.location.href = "predictor.html";
   } else {
     document.getElementById("error-popup").classList.remove("hidden");
   }
