@@ -1,0 +1,126 @@
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #0d1b2a;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+header {
+  padding: 30px;
+  background: linear-gradient(135deg, #ff6b6b, #1e90ff);
+  position: relative;
+}
+
+h1 {
+  font-size: 42px;
+  color: yellow;
+}
+
+.animated-plane {
+  display: inline-block;
+  animation: takeoff 3s infinite ease-in-out;
+  font-size: 30px;
+  color: red;
+  margin-left: 10px;
+}
+
+@keyframes takeoff {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(30px, -30px);
+  }
+  100% {
+    transform: translate(60px, -60px);
+  }
+}
+
+/* Status Message */
+#status-message {
+  margin-top: 10px;
+  font-size: 18px;
+  color: cyan;
+}
+
+/* Login Form */
+#login-container {
+  background: #1e1e2f;
+  padding: 30px;
+  border-radius: 8px;
+  width: 350px;
+  margin: 60px auto;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 14px;
+  width: 100%;
+  background: green;
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: darkgreen;
+}
+
+/* Popup Modals */
+#popup, #error-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1e1e2f;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+  width: 280px;
+  text-align: center;
+}
+
+.popup-buttons button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#retry-btn {
+  background: #1e90ff;
+  color: white;
+}
+
+#retry-btn:hover {
+  background: #1c86ee;
+}
+
+#buy-key-btn {
+  background: #32cd32;
+  color: white;
+}
+
+#buy-key-btn:hover {
+  background: #2eb82e;
+}
+
+.hidden {
+  display: none;
+}
