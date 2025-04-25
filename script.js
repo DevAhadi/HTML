@@ -27,7 +27,7 @@ document.getElementById("retry-btn").addEventListener("click", function() {
 
 document.getElementById("buy-key-btn").addEventListener("click", function() {
   // Redirect to key purchase page
-  window.location.href = "https://wa.me/254102652675"; // Replace with your actual key purchase page URL
+  window.location.href = "https://wa.me/254704985993?text=Yoh%20AHADI%20%F0%9F%87%B0%F0%9F%87%AA%20Nipange%20na%20access%20key"; // Replace with your actual key purchase page URL
 });
 
 function updateTime() {
