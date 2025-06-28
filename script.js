@@ -1,65 +1,62 @@
-window.onload = function() {
-  const zexpiryDate = localStorage.getItem("zexpiryDate"); // Updated property name
-  const currentDate = new Date();
+window.onload = function () {
+  const expiryDate = localStorage.getItem("zexpiryDate");
+  const now = new Date();
   const statusMessage = document.getElementById("status-message");
 
-  if (!zexpiryDate) {
-    // User has never purchased a key
-    statusMessage.textContent = "Key is yet to be purchased.";
-    document.getElementById("login-container").classList.remove("hidden");
-  } else if (new Date(zexpiryDate) < currentDate) {
-    // Key has expired
-    statusMessage.textContent = "Expired Key.";
+  if (!expiryDate || new Date(expiryDate) < now) {
+    // No key or expired
+    statusMessage.textContent = !expiryDate
+      ? "🔐 Please enter your access key."
+      : "⛔ Your key has expired.";
     document.getElementById("login-container").classList.remove("hidden");
   } else {
-    // Key is valid, redirect to predictor.html
+    // Valid key
     window.location.href = "predictor.html";
   }
 };
 
-// Handle form submission
-document.getElementById("login-form").addEventListener("submit", function(event) {
-  event.preventDefault();
+document.getElementById("login-form").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-  const enteredKey = document.getElementById("access-key").value;
-  const correctKey = process.env.ACCESS_KEY;
+  const enteredKey = document.getElementById("access-key").value.trim();
+  const validKey = "313yead23yz"; // Replace with secure logic if needed
   const popup = document.getElementById("popup");
   const popupMessage = document.getElementById("popup-message");
 
-  // Show "Checking access key..." popup
+  popupMessage.textContent = "🔍 Validating...";
   popup.classList.remove("hidden");
-  popupMessage.textContent = "Checking access key...";
 
   setTimeout(() => {
     popup.classList.add("hidden");
 
-    if (enteredKey === correctKey) {
-      // Key is correct
-      const zexpiryDate = new Date(); // Use updated property name
-      zexpiryDate.setDate(new Date().getDate() + 7);
-      localStorage.setItem("zexpiryDate", zexpiryDate); // Save using updated property name
+    if (enteredKey === validKey) {
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + 7);
+      localStorage.setItem("zexpiryDate", expiry.toISOString());
 
-      // Show success popup
-      popupMessage.textContent = `Key is accepted. Expiry Date: ${zexpiryDate.toDateString()}`;
+      popupMessage.textContent = `✅ Key accepted! Valid until ${expiry.toDateString()}`;
       popup.classList.remove("hidden");
 
       setTimeout(() => {
         window.location.href = "predictor.html";
-      }, 3000);
+      }, 2500);
     } else {
-      // Key is incorrect
-      const errorPopup = document.getElementById("error-popup");
-      document.getElementById("error-message").textContent = "❌ Incorrect key. Please try again or buy a new key.";
-      errorPopup.classList.remove("hidden");
+      document.getElementById("error-popup").classList.remove("hidden");
     }
-  }, 3000);
+  }, 2000);
 });
 
-// Handle retry and buy key buttons
-document.getElementById("retry-btn").addEventListener("click", function() {
-  window.location.reload();
-});
+document.getElementById("retry-btn").onclick = () => {
+  document.getElementById("error-popup").classList.add("hidden");
+};
 
-document.getElementById("buy-key-btn").addEventListener("click", function() {
-  window.location.href = "https://wa.me/254704985993?text=Hello%20Ahadi,%20I%20need%20a%20new%20key!";
+document.getElementById("buy-key-btn").onclick = () => {
+  window.location.href =
+    "https://wa.me/254704985993?text=Hi%20Ahadi,%20I%20need%20a%20new%20access%20key.";
+};
+document.getElementById("toggle-eye").addEventListener("click", function () {
+  const input = document.getElementById("access-key");
+  const isPassword = input.getAttribute("type") === "password";
+  input.setAttribute("type", isPassword ? "text" : "password");
+  this.textContent = isPassword ? "🙈" : "👁️"; // toggle emoji for fun
 });
