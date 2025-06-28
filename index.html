@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login ✈️ Predictor</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aviator Predictor</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
-    <h1>Welcome to Predictor <span class="animated-plane">✈️</span></h1>
+    <h1>AVIATOR <span class="rainbow-text">PREDICTOR</span> <span class="animated-plane">✈️</span></h1>
     <p id="status-message"></p>
   </header>
 
   <main>
-    <section id="login-container" class="hidden">
+    <section id="login-container">
       <form id="login-form">
-        <label for="access-key">🔑 Access Key:</label>
-        <input type="text" id="access-key" placeholder="Enter Key" required>
-        <button type="submit">Submit</button>
+        <label for="access-key">🔐 Enter Access Key:</label>
+        <div class="input-wrapper">
+  <input type="password" id="access-key" placeholder="Enter your access key" required />
+  <span id="toggle-eye" class="eye">&#128065;</span>
+</div>
+        <button type="submit">Unlock Access</button>
       </form>
     </section>
 
-    <!-- Popup Modal -->
-    <div id="popup" class="hidden">
-      <p id="popup-message">Checking access key...</p>
+    <div id="popup" class="hidden popup-modal">
+      <p id="popup-message">Validating Key...</p>
     </div>
 
-    <!-- Error Popup for Incorrect Password -->
-    <div id="error-popup" class="hidden">
-      <p id="error-message"></p>
+    <div id="error-popup" class="hidden popup-modal">
+      <p id="error-message">❌ Invalid key</p>
       <div class="popup-buttons">
         <button id="retry-btn">Try Again</button>
         <button id="buy-key-btn">Buy Key</button>
@@ -37,11 +38,11 @@
   </main>
 
   <footer>
-     <div class="marquee">
+    <div class="marquee">
       <p>💳 Purchase your key from Ahadi +254704985993</p>
-     </div>
+    </div>
   </footer>
 
   <script src="script.js"></script>
 </body>
-</html>
+        </html>
