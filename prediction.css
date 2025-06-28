@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #0e0f17;
+  background-color: #0b0d17;
   color: white;
   text-align: center;
   overflow-x: hidden;
@@ -19,8 +19,8 @@ header {
 
 .glow {
   font-size: 38px;
-  color: white;
   text-transform: uppercase;
+  color: white;
   animation: glow 2s ease-in-out infinite;
   letter-spacing: 2px;
 }
@@ -39,6 +39,13 @@ header {
   color: cyan;
   font-weight: bold;
   margin-top: 10px;
+}
+
+/* === EXPIRY LABEL === */
+.expiry-label {
+  color: #aaa;
+  font-size: 14px;
+  margin-top: 6px;
 }
 
 /* === GENERATE BUTTON === */
@@ -60,49 +67,45 @@ header {
 
 /* === POPUP MODAL === */
 #popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #1b1d2b;
-  border: 2px solid red;
-  box-shadow: 0 0 18px red;
-  padding: 20px;
+  margin-top: 20px;
+  background-color: #1c1e2a;
+  padding: 15px;
   border-radius: 10px;
-  z-index: 999;
+  border: 2px solid red;
   width: 280px;
-  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 12px red;
 }
 
 .hidden {
   display: none;
 }
 
-/* === PREDICTION RESULT === */
+/* === FLOAT / RESULT === */
 #float-container {
-  margin-top: 40px;
-  font-size: 34px;
-  font-weight: bold;
-  animation: fadeIn 0.3s ease-in-out;
+  margin-top: 30px;
+}
+
+.float-label {
+  font-size: 22px;
+  margin-bottom: 5px;
 }
 
 #random-float {
-  color: #ff2e63;
-  text-shadow: 0 0 12px #ff2e63;
-  animation: pulse 1.5s ease-in-out infinite;
+  font-size: 40px;
+  color: #ff4757;
+  text-shadow: 0 0 10px #ff4757;
+  font-weight: bold;
+  animation: pop 1.2s ease;
 }
 
-@keyframes pulse {
-  0%, 100% { text-shadow: 0 0 12px #ff2e63; }
-  50%      { text-shadow: 0 0 25px #ff2e63; }
+@keyframes pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* === STREAK STATUS === */
+/* === STREAK INDICATOR === */
 #streak-status {
   margin-top: 15px;
   font-size: 22px;
@@ -120,6 +123,11 @@ header {
   text-shadow: 0 0 10px #1e90ff;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
 /* === COUNTDOWN MESSAGE === */
 #countdown-message {
   margin-top: 25px;
@@ -135,24 +143,23 @@ header {
   width: 100%;
   background: black;
   overflow: hidden;
-  height: 40px;
+  height: 38px;
   display: flex;
   align-items: center;
-  box-sizing: border-box;
   z-index: 999;
 }
 
 .marquee-content {
   display: inline-flex;
   white-space: nowrap;
-  animation: scroll-left 18s linear infinite;
+  animation: scroll-left 15s linear infinite;
 }
 
 .marquee-content span {
   padding-right: 80px;
-  color: red;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
+  color: red;
 }
 
 @keyframes scroll-left {
