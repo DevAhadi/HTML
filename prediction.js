@@ -1,4 +1,4 @@
-// ✅ Live clock
+// === Show Current Time ===
 function updateTime() {
   const now = new Date();
   document.getElementById("current-time").textContent = now.toLocaleTimeString();
@@ -6,7 +6,16 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// 📜 History handling
+// === Expiry Check ===
+const expiry = localStorage.getItem("zexpiryDate");
+const now = new Date();
+
+if (!expiry || new Date(expiry) < now) {
+  alert("⛔ Your access has expired. Please enter a valid key.");
+  window.location.href = "index.html";
+}
+
+// === Utility: History Management ===
 function getHistory() {
   return JSON.parse(localStorage.getItem("predictionHistory") || "[]");
 }
@@ -18,7 +27,6 @@ function savePrediction(value) {
   localStorage.setItem("predictionHistory", JSON.stringify(history));
 }
 
-// 🔥 Streak detection
 function isHotStreak(history) {
   return history.filter(v => v >= 2.0).length >= 3;
 }
@@ -27,7 +35,7 @@ function isColdStreak(history) {
   return history.filter(v => v <= 1.3).length >= 3;
 }
 
-// 🎯 Generate prediction
+// === Generate Button Logic ===
 document.getElementById("generate-btn").addEventListener("click", () => {
   const now = Date.now();
   const lastTime = parseInt(localStorage.getItem("lastGeneratedTime") || "0");
@@ -58,6 +66,7 @@ document.getElementById("generate-btn").addEventListener("click", () => {
     return;
   }
 
+  // Show loading popup
   popup.classList.remove("hidden");
 
   setTimeout(() => {
@@ -66,7 +75,7 @@ document.getElementById("generate-btn").addEventListener("click", () => {
     const history = getHistory();
     let result;
 
-    // 🔮 Smart odds generation
+    // === Smart Prediction Logic ===
     if (isHotStreak(history)) {
       result = (Math.random() * (1.8 - 1.1) + 1.1).toFixed(2);
     } else if (isColdStreak(history)) {
@@ -79,10 +88,11 @@ document.getElementById("generate-btn").addEventListener("click", () => {
 
     document.getElementById("random-float").textContent = `${result}x`;
     floatContainer.classList.remove("hidden");
+
     savePrediction(parseFloat(result));
     localStorage.setItem("lastGeneratedTime", now);
 
-    // 🔁 Update streak label
+    // Show streak label
     if (isHotStreak(history)) {
       streakLabel.textContent = "🔥 HOT STREAK DETECTED";
       streakLabel.className = "hot";
@@ -94,5 +104,5 @@ document.getElementById("generate-btn").addEventListener("click", () => {
     } else {
       streakStatus.classList.add("hidden");
     }
-  }, 3000);
+  }, 3000); // signal delay
 });
