@@ -8,8 +8,9 @@
 </head>
 <body>
   <header>
-    <h1><span class="glow">BETIKA AVIATOR SIGNALS</span></h1>
+    <h1 class="glow">BETIKA AVIATOR SIGNALS</h1>
     <p>🕒 Current Time: <span id="current-time"></span></p>
+    <p class="expiry-label">Key valid until: <span id="expiry-date"></span></p>
   </header>
 
   <main>
@@ -20,17 +21,18 @@
       <p id="popup-message">🛫 Gathering Signals...</p>
     </div>
 
-    <!-- Predicted Odd Display -->
+    <!-- Predicted Float Display -->
     <div id="float-container" class="hidden">
-      <p>🎰 Predicted Odd: <span id="random-float">--</span></p>
+      <p class="float-label">Predicted Odd:</p>
+      <span id="random-float">--</span>
     </div>
 
-    <!-- HOT or COLD Streak Label -->
+    <!-- Streak Indicator -->
     <div id="streak-status" class="hidden">
       <p><span id="streak-label"></span></p>
     </div>
 
-    <!-- Countdown Timer -->
+    <!-- Cooldown Message -->
     <p id="countdown-message" class="hidden">⏳ Please wait <span id="countdown">120</span> seconds to generate again.</p>
   </main>
 
@@ -44,5 +46,14 @@
   </footer>
 
   <script src="prediction.js"></script>
+  <script>
+    // Display expiry date if available
+    const expiryDateSpan = document.getElementById("expiry-date");
+    const storedExpiry = localStorage.getItem("zexpiryDate");
+    if (expiryDateSpan && storedExpiry) {
+      const exp = new Date(storedExpiry);
+      expiryDateSpan.textContent = exp.toDateString();
+    }
+  </script>
 </body>
-  </html>
+      </html>
