@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> ✈️ Aviator Signals</title>
-  <link rel="stylesheet" href="prediction.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BETIKA Aviator Signals</title>
+  <link rel="stylesheet" href="prediction.css" />
 </head>
 <body>
   <header>
-    <h1>Current Time: <span id="current-time"></span></h1>
-    <p>✈️ Live Betika  Aviator Signals</p>
+    <h1><span class="glow">BETIKA AVIATOR SIGNALS</span></h1>
+    <p>🕒 Current Time: <span id="current-time"></span></p>
   </header>
 
   <main>
-    <button id="generate-btn">Generate Next Round Signal ✈️</button>
+    <button id="generate-btn">🎯 Generate Prediction</button>
 
     <!-- Popup Modal -->
     <div id="popup" class="hidden">
-      <p id="popup-message">Obtaining signals...</p>
+      <p id="popup-message">🛫 Gathering Signals...</p>
     </div>
 
-    <!-- Random Float Display -->
+    <!-- Predicted Odd Display -->
     <div id="float-container" class="hidden">
-      <p>Fly-Away Odd: <span id="random-float">0.00x</span></p>
+      <p>🎰 Predicted Odd: <span id="random-float">--</span></p>
+    </div>
+
+    <!-- HOT or COLD Streak Label -->
+    <div id="streak-status" class="hidden">
+      <p><span id="streak-label"></span></p>
     </div>
 
     <!-- Countdown Timer -->
-    <p id="countdown-message" class="hidden">❌ Please wait <span id="countdown">90</span> seconds before generating again.</p>
+    <p id="countdown-message" class="hidden">⏳ Please wait <span id="countdown">120</span> seconds to generate again.</p>
   </main>
 
-  <!-- Moving Banner Footer -->
   <footer>
     <div class="marquee">
-      <p>POWERED BY SPRIBE ✈️</p>
+      <div class="marquee-content">
+        <span>🔧 POWERED BY SPRIBE | Accurate Aviator Predictions ✈️</span>
+        <span>🔧 POWERED BY SPRIBE | Accurate Aviator Predictions ✈️</span>
+      </div>
     </div>
   </footer>
 
   <script src="prediction.js"></script>
 </body>
-</html>
+  </html>
