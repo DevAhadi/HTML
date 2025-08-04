@@ -1,21 +1,21 @@
-// === Show Current Time ===
+// === Show Current Time at Header ===
 function updateTime() {
   const now = new Date();
-  document.getElementById("current-time").textContent = now.toLocaleTimeString();
+  const timeString = now.toLocaleTimeString();
+  document.getElementById("current-time").textContent = timeString;
 }
 setInterval(updateTime, 1000);
-updateTime();
+updateTime(); // Initialize immediately
 
 // === Expiry Check ===
 const expiry = localStorage.getItem("zexpiryDate");
 const now = new Date();
-
 if (!expiry || new Date(expiry) < now) {
   alert("⛔ Your access has expired. Please enter a valid key.");
   window.location.href = "index.html";
 }
 
-// === Utility: History Management ===
+// === History Management ===
 function getHistory() {
   return JSON.parse(localStorage.getItem("predictionHistory") || "[]");
 }
@@ -23,7 +23,7 @@ function getHistory() {
 function savePrediction(value) {
   const history = getHistory();
   history.push(value);
-  if (history.length > 5) history.shift();
+  if (history.length > 5) history.shift(); // Keep last 5
   localStorage.setItem("predictionHistory", JSON.stringify(history));
 }
 
@@ -36,63 +36,64 @@ function isColdStreak(history) {
 }
 
 // === Generate Button Logic ===
-document.getElementById("generate-btn").addEventListener("click", () => {
-  const now = Date.now();
-  const lastTime = parseInt(localStorage.getItem("lastGeneratedTime") || "0");
-  const cooldown = 120000; // 2 minutes
+document.getElementById("generate-btn").addEventListener("click", function () {
+  const lastGeneratedTime = localStorage.getItem("lastGeneratedTime");
+  const currentTime = Date.now();
 
+  const countdownElement = document.getElementById("countdown");
+  const countdownMessage = document.getElementById("countdown-message");
   const popup = document.getElementById("popup");
   const floatContainer = document.getElementById("float-container");
-  const countdownMsg = document.getElementById("countdown-message");
-  const countdown = document.getElementById("countdown");
   const streakStatus = document.getElementById("streak-status");
   const streakLabel = document.getElementById("streak-label");
 
-  if (now - lastTime < cooldown) {
-    let remaining = Math.ceil((cooldown - (now - lastTime)) / 1000);
-    countdown.textContent = remaining;
-    countdownMsg.classList.remove("hidden");
+  // === Cooldown Logic (90 seconds) ===
+  if (lastGeneratedTime && currentTime - lastGeneratedTime < 90000) {
+    countdownMessage.classList.remove("hidden");
+    let remainingTime = Math.ceil((90000 - (currentTime - lastGeneratedTime)) / 1000);
+    countdownElement.textContent = remainingTime;
 
-    const interval = setInterval(() => {
-      remaining--;
-      countdown.textContent = remaining;
-      if (remaining <= 0) {
-        clearInterval(interval);
-        countdownMsg.classList.add("hidden");
-        countdown.textContent = "120";
-        localStorage.removeItem("lastGeneratedTime");
+    const countdownInterval = setInterval(() => {
+      remainingTime--;
+      countdownElement.textContent = remainingTime;
+      if (remainingTime <= 0) {
+        clearInterval(countdownInterval);
+        countdownMessage.classList.add("hidden");
+        countdownElement.textContent = "90";
       }
     }, 1000);
     return;
   }
 
-  // Show loading popup
+  // === Show "Obtaining signals..." ===
   popup.classList.remove("hidden");
 
   setTimeout(() => {
     popup.classList.add("hidden");
 
     const history = getHistory();
-    let result;
+    let randomFloat;
 
-    // === Smart Prediction Logic ===
+    // === Prediction Logic with Streak Sensitivity ===
     if (isHotStreak(history)) {
-      result = (Math.random() * (1.8 - 1.1) + 1.1).toFixed(2);
+      randomFloat = (Math.random() * (1.8 - 1.1) + 1.1).toFixed(2);
     } else if (isColdStreak(history)) {
-      result = (Math.random() * (3.0 - 2.0) + 2.0).toFixed(2);
+      randomFloat = (Math.random() * (3.0 - 2.0) + 2.0).toFixed(2);
     } else {
-      result = Math.random() < 0.25
-        ? (Math.random() * (20 - 3) + 3).toFixed(2)
-        : (Math.random() * (2.49 - 1) + 1).toFixed(2);
+      randomFloat = Math.random() < 0.25
+        ? (Math.random() * (20.00 - 3.00) + 3.00).toFixed(2)
+        : (Math.random() * (2.49 - 1.00) + 1.00).toFixed(2);
     }
 
-    document.getElementById("random-float").textContent = `${result}x`;
+    // === Format and Display Result ===
+    const floatWithX = `${randomFloat}x`;
+    document.getElementById("random-float").textContent = floatWithX;
     floatContainer.classList.remove("hidden");
 
-    savePrediction(parseFloat(result));
-    localStorage.setItem("lastGeneratedTime", now);
+    // === Save and Flag Streak ===
+    savePrediction(parseFloat(randomFloat));
+    localStorage.setItem("lastGeneratedTime", currentTime);
 
-    // Show streak label
     if (isHotStreak(history)) {
       streakLabel.textContent = "🔥 HOT STREAK DETECTED";
       streakLabel.className = "hot";
@@ -101,8 +102,9 @@ document.getElementById("generate-btn").addEventListener("click", () => {
       streakLabel.textContent = "🥶 COLD STREAK IN PROGRESS";
       streakLabel.className = "cold";
       streakStatus.classList.remove("hidden");
-    } else {
+      } else {
       streakStatus.classList.add("hidden");
     }
-  }, 3000); // signal delay
+
+  }, 3000); // Delay for popup
 });
