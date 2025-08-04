@@ -19,7 +19,7 @@ document.getElementById("login-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
   const enteredKey = document.getElementById("access-key").value.trim();
-  const validKey = "313yead23yz"; // Replace with secure logic if needed
+  const validKey = "31(3ye'a;d+23yz"; // Replace with secure logic if needed
   const popup = document.getElementById("popup");
   const popupMessage = document.getElementById("popup-message");
 
