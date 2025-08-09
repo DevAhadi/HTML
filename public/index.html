@@ -4,7 +4,95 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Aviator Predictor</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #00FF00;
+      font-family: monospace;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .rainbow-text {
+      background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .animated-plane {
+      animation: fly 2s infinite alternate;
+    }
+
+    @keyframes fly {
+      from { transform: translateX(0); }
+      to { transform: translateX(10px); }
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 80%;
+    }
+
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #1f1f1f;
+      color: #00FF00;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .eye {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #00FF00;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #00cc00;
+    }
+
+    .popup-modal {
+      background-color: #1f1f1f;
+      border: 1px solid #00FF00;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .popup-buttons {
+      margin-top: 10px;
+    }
+
+    .marquee {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #00FF00;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -17,32 +105,121 @@
       <form id="login-form">
         <label for="access-key">🔐 Enter Access Key:</label>
         <div class="input-wrapper">
-  <input type="password" id="access-key" placeholder="Enter your access key" required />
-  <span id="toggle-eye" class="eye">&#128065;</span>
-</div>
+          <input type="password" id="access-key" placeholder="Enter your access key" required />
+          <span id="toggle-eye" class="eye">&#128065;</span>
+        </div>
         <button type="submit">Unlock Access</button>
       </form>
     </section>
 
-    <div id="popup" class="hidden popup-modal">
+    <div id="popup" class="popup-modal hidden">
       <p id="popup-message">Validating Key...</p>
     </div>
 
-    <div id="error-popup" class="hidden popup-modal">
+    <div id="error-popup" class="popup-modal hidden">
       <p id="error-message">❌ Invalid key</p>
       <div class="popup-buttons">
         <button id="retry-btn">Try Again</button>
-        <button id="buy-key-btn">Buy Key</button>
+        <button id="open-payment-btn">Buy Key</button>
       </div>
+    </div>
+
+    <div id="payment-popup" class="popup-modal hidden">
+      <p>📲 Enter your Safaricom number:</p>
+      <input type="text" id="phone-input" placeholder="07XXXXXXXX" />
+      <button id="pay-btn">Pay Ksh 10</button>
+      <button id="cancel-payment-btn">Cancel</button>
+      <p id="payment-status"></p>
     </div>
   </main>
 
   <footer>
     <div class="marquee">
-      <p>💳 Purchase your key from Ahadi +254704985993</p>
+      <p>📞 For support, contact Ahadi: +254704985993</p>
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // 🔐 Handle Access Key Validation
+    document.getElementById('login-form')?.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const keyInput = document.getElementById('access-key');
+      const key = keyInput.value.trim();
+
+      document.getElementById('popup').classList.remove('hidden');
+      document.getElementById('popup-message').textContent = '🔄 Validating Key...';
+  try {
+    const res = await fetch('/api/validateKey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key })
+    });
+
+    const data = await res.json();
+    document.getElementById('popup').classList.add('hidden');
+
+    if (data.valid) {
+      window.location.href = 'predictor.html';
+    } else {
+      document.getElementById('error-popup').classList.remove('hidden');
+    }
+  } catch (err) {
+    document.getElementById('popup-message').textContent = '❌ Server Error';
+    setTimeout(() => {
+      document.getElementById('popup').classList.add('hidden');
+    }, 2000);
+  }
+});
+
+// 👁️ Toggle Password Visibility
+document.getElementById('toggle-eye')?.addEventListener('click', () => {
+  const input = document.getElementById('access-key');
+  input.type = input.type === 'password' ? 'text' : 'password';
+});
+
+// 🔁 Retry Button
+document.getElementById('retry-btn')?.addEventListener('click', () => {
+  document.getElementById('error-popup').classList.add('hidden');
+});
+
+// 💳 Open Payment Modal
+document.getElementById('open-payment-btn')?.addEventListener('click', () => {
+  document.getElementById('error-popup').classList.add('hidden');
+  document.getElementById('payment-popup').classList.remove('hidden');
+});
+
+// ❌ Cancel Payment
+document.getElementById('cancel-payment-btn')?.addEventListener('click', () => {
+  document.getElementById('payment-popup').classList.add('hidden');
+  document.getElementById('payment-status').textContent = '';
+});
+
+// ✅ Process Mpesa Payment
+document.getElementById('pay-btn')?.addEventListener('click', async () => {
+  const phone = document.getElementById('phone-input').value.trim();
+  document.getElementById('payment-status').textContent = '⏳ Sending STK Push...';
+
+  try {
+    const res = await fetch('/api/stkPush', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, amount: 10 })
+    });
+
+    const data = await res.json();
+
+    if (data.ResponseCode === '0') {
+      document.getElementById('payment-status').innerHTML =
+        '✅ Payment Sent<br>Your Access Key: <strong>AHADI-2025-ACCESS</strong>';
+    } else {
+      document.getElementById('payment-status').textContent = '❌ Payment Failed';
+    }
+  } catch (err) {
+    document.getElementById('payment-status').textContent = '❌ Network Error';
+  }
+});
+
+
+  </script>
 </body>
-        </html>
+</html>
