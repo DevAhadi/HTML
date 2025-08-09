@@ -10,13 +10,19 @@
       color: #00FF00;
       font-family: monospace;
       margin: 0;
-      padding: 20px;
-      text-align: center;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
-    header h1 {
+    header {
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
       font-size: 2em;
-      margin-bottom: 10px;
     }
 
     .rainbow-text {
@@ -34,40 +40,54 @@
       to { transform: translateX(10px); }
     }
 
-    .input-wrapper {
-      position: relative;
-      display: inline-block;
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 40px;
+    }
+
+    form {
       width: 80%;
+      max-width: 400px;
+      background-color: #1f1f1f;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #00FF00;
     }
 
     input[type="password"], input[type="text"] {
       width: 100%;
       padding: 10px;
-      background-color: #1f1f1f;
+      background-color: #0a0a0a;
       color: #00FF00;
       border: none;
       border-radius: 4px;
+      margin-top: 10px;
     }
 
     .eye {
       position: absolute;
-      right: 10px;
-      top: 10px;
+      right: 20px;
+      top: 45px;
       cursor: pointer;
     }
 
+    .input-wrapper {
+      position: relative;
+    }
+
     button {
-      margin-top: 10px;
+      margin-top: 15px;
       padding: 10px 20px;
       background-color: #00FF00;
       color: #0a0a0a;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #00cc00;
+      width: 100%;
     }
 
     .popup-modal {
@@ -77,58 +97,39 @@
       margin-top: 20px;
       border-radius: 6px;
       display: none;
-    }
-
-    .popup-buttons {
-      margin-top: 10px;
+      text-align: center;
     }
 
     .marquee {
-      margin-top: 40px;
+      text-align: center;
+      padding: 10px;
       font-size: 0.9em;
       color: #00FF00;
-    }
-
-    .hidden {
-      display: none;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>AVIATOR <span class="rainbow-text">PREDICTOR</span> <span class="animated-plane">✈️</span></h1>
-    <p id="status-message"></p>
   </header>
 
   <main>
-    <section id="login-container">
-      <form id="login-form">
-        <label for="access-key">🔐 Enter Access Key:</label>
-        <div class="input-wrapper">
-          <input type="password" id="access-key" placeholder="Enter your access key" required />
-          <span id="toggle-eye" class="eye">&#128065;</span>
-        </div>
-        <button type="submit">Unlock Access</button>
-      </form>
-    </section>
-
-    <div id="popup" class="popup-modal hidden">
-      <p id="popup-message">Validating Key...</p>
-    </div>
-
-    <div id="error-popup" class="popup-modal hidden">
-      <p id="error-message">❌ Invalid key</p>
-      <div class="popup-buttons">
-        <button id="retry-btn">Try Again</button>
-        <button id="open-payment-btn">Buy Key</button>
+    <form>
+      <label for="access-key">🔐 Enter Access Key:</label>
+      <div class="input-wrapper">
+        <input type="password" id="access-key" placeholder="Enter your access key" required />
+        <span id="toggle-eye" class="eye" onclick="togglePassword()">&#128065;</span>
       </div>
-    </div>
+      <button type="button" onclick="validateKey()">Unlock Access</button>
+      <button type="button" onclick="showPaymentPopup()">Buy Key via Mpesa</button>
+      <p id="status-message"></p>
+    </form>
 
-    <div id="payment-popup" class="popup-modal hidden">
+    <div id="payment-popup" class="popup-modal">
       <p>📲 Enter your Safaricom number:</p>
       <input type="text" id="phone-input" placeholder="07XXXXXXXX" />
-      <button id="pay-btn">Pay Ksh 10</button>
-      <button id="cancel-payment-btn">Cancel</button>
+      <button onclick="processPayment()">Pay Ksh 10</button>
+      <button onclick="hidePaymentPopup()">Cancel</button>
       <p id="payment-status"></p>
     </div>
   </main>
@@ -140,84 +141,62 @@
   </footer>
 
   <script>
-    // 🔐 Handle Access Key Validation
-    document.getElementById('login-form')?.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const keyInput = document.getElementById('access-key');
-      const key = keyInput.value.trim();
+    function validateKey() {
+      const key = document.getElementById('access-key').value.trim();
 
-      document.getElementById('popup').classList.remove('hidden');
-      document.getElementById('popup-message').textContent = '🔄 Validating Key...';
-  try {
-    const res = await fetch('/api/validateKey', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key })
-    });
-
-    const data = await res.json();
-    document.getElementById('popup').classList.add('hidden');
-
-    if (data.valid) {
-      window.location.href = 'predictor.html';
-    } else {
-      document.getElementById('error-popup').classList.remove('hidden');
+      fetch('/api/validateKey', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.valid) {
+          window.location.href = 'predictor.html';
+        } else {
+          document.getElementById('status-message').textContent = '❌ Invalid Key';
+        }
+      })
+      .catch(() => {
+        document.getElementById('status-message').textContent = '❌ Server Error';
+      });
     }
-  } catch (err) {
-    document.getElementById('popup-message').textContent = '❌ Server Error';
-    setTimeout(() => {
-      document.getElementById('popup').classList.add('hidden');
-    }, 2000);
-  }
-});
-
-// 👁️ Toggle Password Visibility
-document.getElementById('toggle-eye')?.addEventListener('click', () => {
+function togglePassword() {
   const input = document.getElementById('access-key');
   input.type = input.type === 'password' ? 'text' : 'password';
-});
+}
 
-// 🔁 Retry Button
-document.getElementById('retry-btn')?.addEventListener('click', () => {
-  document.getElementById('error-popup').classList.add('hidden');
-});
+function showPaymentPopup() {
+  document.getElementById('payment-popup').style.display = 'block';
+}
 
-// 💳 Open Payment Modal
-document.getElementById('open-payment-btn')?.addEventListener('click', () => {
-  document.getElementById('error-popup').classList.add('hidden');
-  document.getElementById('payment-popup').classList.remove('hidden');
-});
-
-// ❌ Cancel Payment
-document.getElementById('cancel-payment-btn')?.addEventListener('click', () => {
-  document.getElementById('payment-popup').classList.add('hidden');
+function hidePaymentPopup() {
+  document.getElementById('payment-popup').style.display = 'none';
   document.getElementById('payment-status').textContent = '';
-});
+}
 
-// ✅ Process Mpesa Payment
-document.getElementById('pay-btn')?.addEventListener('click', async () => {
+function processPayment() {
   const phone = document.getElementById('phone-input').value.trim();
   document.getElementById('payment-status').textContent = '⏳ Sending STK Push...';
 
-  try {
-    const res = await fetch('/api/stkPush', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, amount: 10 })
-    });
-
-    const data = await res.json();
-
+  fetch('/api/stkPush', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone, amount: 10 })
+  })
+  .then(res => res.json())
+  .then(data => {
     if (data.ResponseCode === '0') {
       document.getElementById('payment-status').innerHTML =
         '✅ Payment Sent<br>Your Access Key: <strong>AHADI-2025-ACCESS</strong>';
     } else {
       document.getElementById('payment-status').textContent = '❌ Payment Failed';
     }
-  } catch (err) {
+  })
+  .catch(() => {
     document.getElementById('payment-status').textContent = '❌ Network Error';
-  }
-});
+  });
+}
 
 
   </script>
