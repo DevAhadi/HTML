@@ -1,62 +1,53 @@
-window.onload = function () {
-  const expiryDate = localStorage.getItem("zexpiryDate");
-  const now = new Date();
-  const statusMessage = document.getElementById("status-message");
+import axios from 'axios';
+import moment from 'moment';
 
-  if (!expiryDate || new Date(expiryDate) < now) {
-    // No key or expired
-    statusMessage.textContent = !expiryDate
-      ? "🔐 Please enter your access key."
-      : "⛔ Your key has expired.";
-    document.getElementById("login-container").classList.remove("hidden");
-  } else {
-    // Valid key
-    window.location.href = "predictor.html";
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).end();
+
+  const { phone, amount } = req.body;
+
+  try {
+    const token = await getAccessToken();
+    const timestamp = moment().format('YYYYMMDDHHmmss');
+    const password = Buffer.from(
+      process.env.MPESA_SHORTCODE + process.env.MPESA_PASSKEY + timestamp
+    ).toString('base64');
+
+    const payload = {
+      BusinessShortCode: process.env.MPESA_SHORTCODE, // Your Till number
+      Password: password,
+      Timestamp: timestamp,
+      TransactionType: 'CustomerBuyGoodsOnline', // For Buy Goods Till
+      Amount: amount,
+      PartyA: phone, // Customer phone number
+      PartyB: process.env.MPESA_SHORTCODE, // Your Till number
+      PhoneNumber: phone,
+      CallBackURL: process.env.MPESA_CALLBACK_URL,
+      AccountReference: 'AHADITECH',
+      TransactionDesc: 'Access Key Purchase'
+    };
+
+    const response = await axios.post(
+      'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+      payload,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    res.status(200).json({
+      ResponseCode: response.data.ResponseCode,
+      message: 'STK Push sent successfully'
+    });
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    res.status(500).json({ error: 'STK Push failed' });
   }
-};
+}
 
-document.getElementById("login-form").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const enteredKey = document.getElementById("access-key").value.trim();
-  const validKey = "31(3ye'a;d+23yz"; // Replace with secure logic if needed
-  const popup = document.getElementById("popup");
-  const popupMessage = document.getElementById("popup-message");
-
-  popupMessage.textContent = "🔍 Validating...";
-  popup.classList.remove("hidden");
-
-  setTimeout(() => {
-    popup.classList.add("hidden");
-
-    if (enteredKey === validKey) {
-      const expiry = new Date();
-      expiry.setDate(expiry.getDate() + 7);
-      localStorage.setItem("zexpiryDate", expiry.toISOString());
-
-      popupMessage.textContent = `✅ Key accepted! Valid until ${expiry.toDateString()}`;
-      popup.classList.remove("hidden");
-
-      setTimeout(() => {
-        window.location.href = "predictor.html";
-      }, 2500);
-    } else {
-      document.getElementById("error-popup").classList.remove("hidden");
-    }
-  }, 2000);
-});
-
-document.getElementById("retry-btn").onclick = () => {
-  document.getElementById("error-popup").classList.add("hidden");
-};
-
-document.getElementById("buy-key-btn").onclick = () => {
-  window.location.href =
-    "https://wa.me/254704985993?text=Hi%20Ahadi,%20I%20need%20a%20new%20access%20key.";
-};
-document.getElementById("toggle-eye").addEventListener("click", function () {
-  const input = document.getElementById("access-key");
-  const isPassword = input.getAttribute("type") === "password";
-  input.setAttribute("type", isPassword ? "text" : "password");
-  this.textContent = isPassword ? "🙈" : "👁️"; // toggle emoji for fun
-});
+async function getAccessToken() {
+  const auth = Buffer.from(`${process.env.MPESA_CONSUMER_KEY}:${process.env.MPESA_CONSUMER_SECRET}`).toString('base64');
+  const res = await axios.get(
+    'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+    { headers: { Authorization: `Basic ${auth}` } }
+  );
+  return res.data.access_token;
+}
