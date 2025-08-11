@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buy Access Key</title>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #00FF00;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: #1f1f1f;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #00FF00;
+      width: 300px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #0a0a0a;
+      color: #00FF00;
+      border: none;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #00FF00;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    #access-popup {
+      display: none;
+      margin-top: 20px;
+      background-color: #1f1f1f;
+      border: 1px solid #00FF00;
+      padding: 15px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📲 Buy Access Key</h2>
+    <input type="text" id="phone-input" placeholder="Enter Safaricom number" />
+    <button onclick="processPayment()">Pay KES 350</button>
+    <p id="payment-status"></p>
+
+    <div id="access-popup">
+      <p>✅ Payment Received!</p>
+      <p>Your Access Key: <strong id="access-key">AHADI-2025-ACCESS</strong></p>
+      <button onclick="copyAccessKey()">📋 Copy Key</button>
+    </div>
+  </div>
+
+  <script>
+    function processPayment() {
+      const phone = document.getElementById('phone-input').value.trim();
+      const status = document.getElementById('payment-status');
+  status.textContent = '⏳ Sending STK Push...';
+
+  fetch('/api/stkPush', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.ResponseCode === '0') {
+      status.textContent = '✅ STK Push Sent. Awaiting confirmation...';
+      setTimeout(() => {
+        document.getElementById('access-popup').style.display = 'block';
+      }, 3000);
+    } else {
+      status.textContent = '❌ Payment Failed';
+    }
+  })
+  .catch(() => {
+    status.textContent = '❌ Network Error';
+  });
+}
+
+function copyAccessKey() {
+  const key = document.getElementById('access-key').textContent;
+  navigator.clipboard.writeText(key).then(() => {
+    alert('Access Key copied!');
+  });
+}
+
+
+  </script>
+</body>
+</html>
