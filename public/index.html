@@ -9,79 +9,33 @@
       background-color: #0a0a0a;
       color: #00FF00;
       font-family: monospace;
-      margin: 0;
-      padding: 0;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-    }
-
-    header {
-      text-align: center;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 2em;
-    }
-
-    .rainbow-text {
-      background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .animated-plane {
-      animation: fly 2s infinite alternate;
-    }
-
-    @keyframes fly {
-      from { transform: translateX(0); }
-      to { transform: translateX(10px); }
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
       align-items: center;
-      padding-bottom: 40px;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
     }
-
     form {
-      width: 80%;
-      max-width: 400px;
       background-color: #1f1f1f;
       padding: 20px;
       border-radius: 8px;
       border: 1px solid #00FF00;
+      width: 300px;
+      text-align: center;
     }
-
-    input[type="password"], input[type="text"] {
+    input {
       width: 100%;
       padding: 10px;
+      margin-top: 10px;
       background-color: #0a0a0a;
       color: #00FF00;
       border: none;
       border-radius: 4px;
-      margin-top: 10px;
     }
-
-    .eye {
-      position: absolute;
-      right: 20px;
-      top: 45px;
-      cursor: pointer;
-    }
-
-    .input-wrapper {
-      position: relative;
-    }
-
     button {
       margin-top: 15px;
-      padding: 10px 20px;
+      padding: 10px;
       background-color: #00FF00;
       color: #0a0a0a;
       border: none;
@@ -89,71 +43,30 @@
       cursor: pointer;
       width: 100%;
     }
-
-    .popup-modal {
-      background-color: #1f1f1f;
-      border: 1px solid #00FF00;
-      padding: 20px;
-      margin-top: 20px;
-      border-radius: 6px;
-      display: none;
-      text-align: center;
-    }
-
-    .marquee {
-      text-align: center;
-      padding: 10px;
-      font-size: 0.9em;
-      color: #00FF00;
+    #status-message {
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>AVIATOR <span class="rainbow-text">PREDICTOR</span> <span class="animated-plane">✈️</span></h1>
-  </header>
-
-  <main>
-    <form>
-      <label for="access-key">🔐 Enter Access Key:</label>
-      <div class="input-wrapper">
-        <input type="password" id="access-key" placeholder="Enter your access key" required />
-        <span id="toggle-eye" class="eye" onclick="togglePassword()">&#128065;</span>
-      </div>
-      <button type="button" onclick="validateKey()">Unlock Access</button>
-      <button type="button" onclick="showPaymentPopup()">Buy Key via Mpesa</button>
-      <p id="status-message"></p>
-    </form>
-
-    <div id="payment-popup" class="popup-modal">
-      <p>📲 Enter your Safaricom number:</p>
-      <input type="text" id="phone-input" placeholder="07XXXXXXXX" />
-      <button onclick="processPayment()">Pay Ksh 10</button>
-      <button onclick="hidePaymentPopup()">Cancel</button>
-      <p id="payment-status"></p>
-    </div>
-  </main>
-
-  <footer>
-    <div class="marquee">
-      <p>📞 For support, contact Ahadi: +254704985993</p>
-    </div>
-  </footer>
+  <form>
+    <h2>🔐 Enter Access Key</h2>
+    <input type="password" id="access-key" placeholder="AHADI-2025-ACCESS" required />
+    <button type="button" onclick="validateKey()">Unlock Access</button>
+    <button type="button" onclick="window.location.href='checkout.html'">Buy Access Key</button>
+    <p id="status-message"></p>
+  </form>
 
   <script>
     function validateKey() {
       const key = document.getElementById('access-key').value.trim();
       const status = document.getElementById('status-message');
+      const validKey = 'AHADI-2025-ACCESS';
 
       status.textContent = '⏳ Validating key...';
-      fetch('/api/validateKey', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.valid) {
+
+      setTimeout(() => {
+        if (key === validKey) {
           status.textContent = '✅ Key accepted! Redirecting...';
           setTimeout(() => {
             window.location.href = 'predictor.html';
@@ -161,50 +74,8 @@
         } else {
           status.textContent = '❌ Invalid Key';
         }
-      })
-      .catch(() => {
-        status.textContent = '❌ Server Error';
-      });
+      }, 800);
     }
-function togglePassword() {
-  const input = document.getElementById('access-key');
-  input.type = input.type === 'password' ? 'text' : 'password';
-}
-
-function showPaymentPopup() {
-  document.getElementById('payment-popup').style.display = 'block';
-}
-
-function hidePaymentPopup() {
-  document.getElementById('payment-popup').style.display = 'none';
-  document.getElementById('payment-status').textContent = '';
-}
-
-function processPayment() {
-  const phone = document.getElementById('phone-input').value.trim();
-  const status = document.getElementById('payment-status');
-
-  status.textContent = '⏳ Sending STK Push...';
-
-  fetch('/api/stkPush', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone, amount: 10 })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.ResponseCode === '0') {
-      status.innerHTML = '✅ Payment Sent<br>Your Access Key: <strong>AHADI-2025-ACCESS</strong>';
-    } else {
-      status.textContent = '❌ Payment Failed';
-    }
-  })
-  .catch(() => {
-    status.textContent = '❌ Network Error';
-  });
-}
-
-
   </script>
 </body>
 </html>
