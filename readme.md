@@ -1,21 +1,16 @@
-# ✈️ Ahaditech Aviator Predictor
+# ✈️ Aviator Predictor
 
-A simple web app that validates access keys and automates Mpesa payments using Safaricom STK Push.
+A sleek web app that predicts Aviator game outcomes and provides access via M-Pesa payments.
 
-## 🔧 Features
+## 🔑 Access Flow
 
-- Static access key validation
-- Mpesa STK Push integration
-- Callback handling
-- Clean UI with embedded CSS
-- Vercel-ready deployment
+- Users enter a static access key to unlock the predictor.
+- If they don’t have a key, they can pay via M-Pesa (Till Number: `3088682`) to receive one.
 
-## 🛠️ Setup
+## 💳 Payment Integration
 
-1\. Clone the repo
-2\. Add `.env.local` with your Mpesa credentials
-3\. Run locally:
+- STK Push via Safaricom Daraja API
+- Callback endpoint confirms payment
+- Access key is revealed upon successful transaction
 
-```bash
-npm install
-vercel dev
+## 📁 Project Structure
