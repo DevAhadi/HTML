@@ -143,7 +143,9 @@
   <script>
     function validateKey() {
       const key = document.getElementById('access-key').value.trim();
+      const status = document.getElementById('status-message');
 
+      status.textContent = '⏳ Validating key...';
       fetch('/api/validateKey', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -152,13 +154,16 @@
       .then(res => res.json())
       .then(data => {
         if (data.valid) {
-          window.location.href = 'predictor.html';
+          status.textContent = '✅ Key accepted! Redirecting...';
+          setTimeout(() => {
+            window.location.href = 'predictor.html';
+          }, 1000);
         } else {
-          document.getElementById('status-message').textContent = '❌ Invalid Key';
+          status.textContent = '❌ Invalid Key';
         }
       })
       .catch(() => {
-        document.getElementById('status-message').textContent = '❌ Server Error';
+        status.textContent = '❌ Server Error';
       });
     }
 function togglePassword() {
@@ -177,7 +182,9 @@ function hidePaymentPopup() {
 
 function processPayment() {
   const phone = document.getElementById('phone-input').value.trim();
-  document.getElementById('payment-status').textContent = '⏳ Sending STK Push...';
+  const status = document.getElementById('payment-status');
+
+  status.textContent = '⏳ Sending STK Push...';
 
   fetch('/api/stkPush', {
     method: 'POST',
@@ -187,14 +194,13 @@ function processPayment() {
   .then(res => res.json())
   .then(data => {
     if (data.ResponseCode === '0') {
-      document.getElementById('payment-status').innerHTML =
-        '✅ Payment Sent<br>Your Access Key: <strong>AHADI-2025-ACCESS</strong>';
+      status.innerHTML = '✅ Payment Sent<br>Your Access Key: <strong>AHADI-2025-ACCESS</strong>';
     } else {
-      document.getElementById('payment-status').textContent = '❌ Payment Failed';
+      status.textContent = '❌ Payment Failed';
     }
   })
   .catch(() => {
-    document.getElementById('payment-status').textContent = '❌ Network Error';
+    status.textContent = '❌ Network Error';
   });
 }
 
